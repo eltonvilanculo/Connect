@@ -1,8 +1,10 @@
 package com.example.connect;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -14,6 +16,11 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -27,25 +34,29 @@ public class MainActivity extends AppCompatActivity {
 
 
     //Signup
-    EditText inputEmailSignUp,inputPasswordSignUp;
+    EditText inputEmailSignUp,inputPasswordSignUp,inputFullNameSignUp,inputVerifyPassword;
 
     //Firebase Auth
     private FirebaseAuth mAuth;
 
 
+    DatabaseReference mDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
 
-        mAuth = FirebaseAuth.getInstance();
+
+
 
         findViewById(R.id.btn_login_id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 showLoginDialog();
+
             }
         });
 
@@ -53,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showSignUpDialog();
+
             }
         });
     }
@@ -71,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         customView.findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
               signin(inputEmailLogin.getText().toString(),inputPasswordLogin.getText().toString());
 
             }
@@ -92,13 +105,27 @@ public class MainActivity extends AppCompatActivity {
 
     void showSignUpDialog(){
         View customView = getLayoutInflater().inflate(R.layout.sign_up_layout, null, false);
-
+        inputFullNameSignUp = customView.findViewById(R.id.input_full_name);
         inputEmailSignUp = customView.findViewById(R.id.input_email_signup);
         inputPasswordSignUp = customView.findViewById(R.id.input_password_signup);
+        inputVerifyPassword = customView.findViewById(R.id.input_verify_password);
+
         customView.findViewById(R.id.btn_signUp).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUp(inputEmailSignUp.getText().toString(),inputPasswordSignUp.getText().toString());
+
+                String password = inputPasswordSignUp.getText().toString();
+                String passwordVerifyed = inputVerifyPassword.getText().toString();
+
+                if (verifyPassword(password,passwordVerifyed)==true){
+                    signUp(inputEmailSignUp.getText().toString(),inputPasswordSignUp.getText().toString(),inputFullNameSignUp.getText().toString());
+                }else {
+                    Toast.makeText(MainActivity.this, "Certifique a palavra passe", Toast.LENGTH_SHORT).show();
+                    inputVerifyPassword.setText("");
+
+                }
+
+
             }
         });
 
@@ -112,12 +139,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void signin(String email , String password){
+    void signin(final String email , String password){
+      showProgressDialog();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+
+
+
+
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("MainActivity", "signInWithEmail:success");
                             //Toast.makeText(MainActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
@@ -139,17 +171,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    void signUp (String email , String password){
+    void signUp (final String email , String password, final String name){
+showProgressDialog();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            User currentUser = new User(name,email);
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = database.getReference();
+                            myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(currentUser);
+
+                            // Write a message to the database
+
+
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             //updateUI(user);
-                            Toast.makeText(MainActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(MainActivity.this , ContentActivity.class));
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -163,6 +204,33 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    void showProgressDialog(){
+        final ProgressDialog pd = new ProgressDialog(MainActivity.this);
+        pd.setMessage("loading");
+        pd.show();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                pd.cancel();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(runnable,2500);
+
+        mAuth = FirebaseAuth.getInstance();
+
+
+
+    }
+public boolean verifyPassword (String oldone , String newone){
+
+        if(oldone.equals(newone))
+            return true ;
+
+        else return  false;
+
+
+}
 
     }
 
