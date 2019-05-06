@@ -30,17 +30,18 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     //Login
-    EditText inputEmailLogin,inputPasswordLogin;
+    EditText inputEmailLogin, inputPasswordLogin;
 
 
     //Signup
-    EditText inputEmailSignUp,inputPasswordSignUp,inputFullNameSignUp,inputVerifyPassword;
+    EditText inputEmailSignUp, inputPasswordSignUp, inputFullNameSignUp, inputVerifyPassword;
 
     //Firebase Auth
     private FirebaseAuth mAuth;
 
 
     DatabaseReference mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +49,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
-
-
         findViewById(R.id.btn_login_id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    return;
+                }
                 showLoginDialog();
 
             }
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    void showLoginDialog(){
+    void showLoginDialog() {
         View customView = getLayoutInflater().inflate(R.layout.login_layout, null, false);
 
         inputEmailLogin = customView.findViewById(R.id.input_email_login);
@@ -84,13 +86,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-              signin(inputEmailLogin.getText().toString(),inputPasswordLogin.getText().toString());
+                signin(inputEmailLogin.getText().toString(), inputPasswordLogin.getText().toString());
 
             }
         });
-
-
-
 
 
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void showSignUpDialog(){
+    void showSignUpDialog() {
         View customView = getLayoutInflater().inflate(R.layout.sign_up_layout, null, false);
         inputFullNameSignUp = customView.findViewById(R.id.input_full_name);
         inputEmailSignUp = customView.findViewById(R.id.input_email_signup);
@@ -117,9 +116,9 @@ public class MainActivity extends AppCompatActivity {
                 String password = inputPasswordSignUp.getText().toString();
                 String passwordVerifyed = inputVerifyPassword.getText().toString();
 
-                if (verifyPassword(password,passwordVerifyed)==true){
-                    signUp(inputEmailSignUp.getText().toString(),inputPasswordSignUp.getText().toString(),inputFullNameSignUp.getText().toString());
-                }else {
+                if (verifyPassword(password, passwordVerifyed) == true) {
+                    signUp(inputEmailSignUp.getText().toString(), inputPasswordSignUp.getText().toString(), inputFullNameSignUp.getText().toString());
+                } else {
                     Toast.makeText(MainActivity.this, "Certifique a palavra passe", Toast.LENGTH_SHORT).show();
                     inputVerifyPassword.setText("");
 
@@ -139,8 +138,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void signin(final String email , String password){
-      showProgressDialog();
+    void signin(final String email, String password) {
+        showProgressDialog();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -148,20 +147,18 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
 
-
-
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("MainActivity", "signInWithEmail:success");
                             //Toast.makeText(MainActivity.this, "Sucesso", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainActivity.this,ContentActivity.class));
+                            startActivity(new Intent(MainActivity.this, ContentActivity.class));
                             FirebaseUser user = mAuth.getCurrentUser();
-                           // updateUI(user);
+                            // updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             //Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
                             Toast.makeText(MainActivity.this, "Falha", Toast.LENGTH_SHORT).show();
-                           // updateUI(null);
+                            // updateUI(null);
                         }
 
                         // ...
@@ -171,14 +168,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    void signUp (final String email , String password, final String name){
-showProgressDialog();
+    void signUp(final String email, String password, final String name) {
+        showProgressDialog();
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            User currentUser = new User(name,email);
+                            User currentUser = new User(name, email);
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = database.getReference();
                             myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(currentUser);
@@ -190,13 +187,13 @@ showProgressDialog();
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             //updateUI(user);
-                            startActivity(new Intent(MainActivity.this , ContentActivity.class));
+                            startActivity(new Intent(MainActivity.this, ContentActivity.class));
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                           // updateUI(null);
+                            // updateUI(null);
                         }
 
                         // ...
@@ -204,7 +201,7 @@ showProgressDialog();
                 });
     }
 
-    void showProgressDialog(){
+    void showProgressDialog() {
         final ProgressDialog pd = new ProgressDialog(MainActivity.this);
         pd.setMessage("loading");
         pd.show();
@@ -215,22 +212,22 @@ showProgressDialog();
             }
         };
         Handler handler = new Handler();
-        handler.postDelayed(runnable,2500);
+        handler.postDelayed(runnable, 2500);
 
         mAuth = FirebaseAuth.getInstance();
 
 
+    }
+
+    public boolean verifyPassword(String oldone, String newone) {
+
+        if (oldone.equals(newone))
+            return true;
+
+        else return false;
+
 
     }
-public boolean verifyPassword (String oldone , String newone){
-
-        if(oldone.equals(newone))
-            return true ;
-
-        else return  false;
-
 
 }
-
-    }
 
