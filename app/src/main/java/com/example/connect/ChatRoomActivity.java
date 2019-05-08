@@ -106,6 +106,7 @@ public class ChatRoomActivity extends AppCompatActivity {
             chatMessage = ((DataSnapshot)iterator.next()).getValue().toString();
             chatUsername = ((DataSnapshot)iterator.next()).getValue().toString();
 
+            //Mensagens whatever
             textViewMsg.append(chatUsername+ ":" + chatMessage + "\n");
         }
 

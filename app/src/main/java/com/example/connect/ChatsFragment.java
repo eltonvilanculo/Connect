@@ -63,7 +63,7 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
 
 
 
-        senderName = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        senderName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         inputAddChat = view.findViewById(R.id.input_add_chat);
         btnAddChat= view.findViewById(R.id.btn_add_chat);
         listViewchatList = view.findViewById(R.id.list_view_chat_list);
@@ -97,6 +97,13 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
            }
            listRooms.clear();
            listRooms.addAll(set);
+
+                for (int i = 0; i <listRooms.size() ; i++) {
+
+                    if(listRooms.get(i).contains("users")){
+                        listRooms.remove(i);
+                    }
+                }
            adapter.notifyDataSetChanged();
             }
 
