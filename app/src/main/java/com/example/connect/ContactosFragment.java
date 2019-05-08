@@ -38,6 +38,7 @@ public class ContactosFragment extends Fragment {
 
     DatabaseReference ref;
     private LinearLayoutManager layout;
+    private User user;
 
 
     public ContactosFragment() {
@@ -50,15 +51,10 @@ public class ContactosFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contactos, container, false);
 
-        if (savedInstanceState == null) {
+
             userList = new ArrayList<>();
-            adapter = new UserListAdapter(this.getContext(), userList);
-            recyclerView = view.findViewById(R.id.recycler);
-            recyclerView.setHasFixedSize(true);
-            layout = new LinearLayoutManager(this.getContext());
-            recyclerView.setLayoutManager(layout);
-            recyclerView.setAdapter(adapter);
-        }
+
+
 
 
         String userId = FirebaseAuth.getInstance().getUid();
@@ -69,7 +65,7 @@ public class ContactosFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
-                    User user = dataSnapshot.getValue(User.class);
+                    user = dataSnapshot.getValue(User.class);
                     addTolist(user);
                 } catch (NullPointerException | NoSuchElementException ex) {
 
@@ -96,7 +92,12 @@ public class ContactosFragment extends Fragment {
 
             }
         });
-
+        adapter = new UserListAdapter(this.getContext(), userList);
+        recyclerView = view.findViewById(R.id.recycler);
+        recyclerView.setHasFixedSize(true);
+        layout = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(layout);
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
