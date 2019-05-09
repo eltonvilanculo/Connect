@@ -1,4 +1,4 @@
-package com.example.connect;
+package com.example.connect.activity;
 
 
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.connect.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

@@ -1,4 +1,4 @@
-package com.example.connect;
+package com.example.connect.fragment;
 
 
 import android.os.Bundle;
@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.connect.R;
+import com.example.connect.model.User;
+import com.example.connect.adapter.UserListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

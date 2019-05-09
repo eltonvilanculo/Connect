@@ -1,4 +1,4 @@
-package com.example.connect;
+package com.example.connect.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.example.connect.R;
+import com.example.connect.model.User;
 
 import java.util.List;
 

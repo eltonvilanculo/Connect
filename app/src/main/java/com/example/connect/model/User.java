@@ -1,4 +1,4 @@
-package com.example.connect;
+package com.example.connect.model;
 
 public class User {
 

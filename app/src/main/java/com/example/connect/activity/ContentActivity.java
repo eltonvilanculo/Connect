@@ -1,12 +1,10 @@
-package com.example.connect;
+package com.example.connect.activity;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
 
+import com.example.connect.R;
+import com.example.connect.adapter.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;

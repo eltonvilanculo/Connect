@@ -1,4 +1,4 @@
-package com.example.connect;
+package com.example.connect.fragment;
 
 
 import android.content.Intent;
@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.connect.R;
+import com.example.connect.activity.ChatRoomActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -116,7 +118,7 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
         listViewchatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getContext(),ChatRoomActivity.class);
+                Intent intent = new Intent(getContext(), ChatRoomActivity.class);
                 intent.putExtra("room_name",((TextView)view).getText().toString());
                 intent.putExtra("user_name",senderName);
                 startActivity(intent);

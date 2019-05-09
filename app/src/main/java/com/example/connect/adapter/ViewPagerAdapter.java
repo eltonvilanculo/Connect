@@ -1,6 +1,10 @@
-package com.example.connect;
+package com.example.connect.adapter;
 
 
+
+import com.example.connect.fragment.ChatsFragment;
+import com.example.connect.fragment.ContactosFragment;
+import com.example.connect.fragment.PerfilFragment;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
