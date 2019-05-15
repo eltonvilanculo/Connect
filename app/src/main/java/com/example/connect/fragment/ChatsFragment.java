@@ -1,6 +1,7 @@
 package com.example.connect.fragment;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -48,6 +49,8 @@ public class ChatsFragment extends Fragment {
 
     String senderName;
 
+    ProgressDialog progressDialog;
+
 private DatabaseReference root= FirebaseDatabase.getInstance().getReference().getRoot();
 
 
@@ -63,8 +66,9 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_chats, container, false);
 
-
-
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Carregando conversas...");
+        progressDialog.show();
         senderName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         inputAddChat = view.findViewById(R.id.input_add_chat);
         btnAddChat= view.findViewById(R.id.btn_add_chat);
@@ -94,6 +98,7 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
 
            while (iterator.hasNext()){
 
+
                set.add(((DataSnapshot) iterator.next()).getKey());
 
            }
@@ -106,6 +111,7 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
                         listRooms.remove(i);
                     }
                 }
+               progressDialog.cancel();
            adapter.notifyDataSetChanged();
             }
 

@@ -8,6 +8,13 @@
     tools:context=".activity.ContentActivity">
 
 
+
+    <include
+        android:id="@+id/toolbar_id"
+        layout="@layout/toolbar"
+        />
+
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"

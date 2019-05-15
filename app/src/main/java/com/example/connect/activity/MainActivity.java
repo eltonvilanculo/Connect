@@ -3,12 +3,14 @@ package com.example.connect.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.connect.R;
 import com.example.connect.model.User;
@@ -25,6 +27,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.example.connect.R.drawable.comunicatefile;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -34,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
 
     //Signup
     EditText inputEmailSignUp, inputPasswordSignUp, inputFullNameSignUp, inputVerifyPassword;
+
+
+    VideoView videoView;
 
     //Firebase Auth
     private FirebaseAuth mAuth;
@@ -47,15 +54,23 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            startActivity(new Intent(MainActivity.this, ContentActivity.class));
+            return;
+        }
 
+     /*   videoView= findViewById(R.id.video_view);
+
+
+        String path = "android.resource://" + getPackageName() + "/" + R.raw.comunicate;
+        videoView.setVideoURI(Uri.parse(path));
+        videoView.start();
+*/
         findViewById(R.id.btn_login_id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (currentUser != null) {
-                    startActivity(new Intent(MainActivity.this, ContentActivity.class));
-                    return;
-                }
+
                 showLoginDialog();
 
             }
@@ -68,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     @Override

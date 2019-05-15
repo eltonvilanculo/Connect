@@ -4,36 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/comunicatefile"
+
     tools:context=".activity.MainActivity">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:weightSum="2"
 
-        >
-        <Button
-            android:id="@+id/btn_login_id"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:text="Entrar"
-
-            />
-        <Button
-            android:id="@+id/btn_registar_id"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:text="Registar"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
 
-            />
 
+
+
+
+
+
+
+
+            <LinearLayout android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="24dp"
+
+                >
+
+                <Button
+                    android:id="@+id/btn_login_id"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:text="Entrar"
+
+                    />
+
+                <Button
+                    android:id="@+id/btn_registar_id"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:text="Registar"
+
+
+                    />
+            </LinearLayout>
+
+
+        </FrameLayout>
 
     </LinearLayout>
-
-</LinearLayout>

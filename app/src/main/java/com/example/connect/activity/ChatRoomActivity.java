@@ -5,13 +5,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.connect.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,28 +27,43 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
-    TextView textViewMsg ;
+    TextView textViewMsg;
     EditText inputSendMsg;
 
-    String senderName , chatName ;
+    String senderName, chatName;
 
-    String chatMessage , chatUsername;
+    String chatMessage, chatUsername;
 
     DatabaseReference root;
     private String tempKey;
+    private boolean isSubscribed = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room);
-        textViewMsg= findViewById(R.id.text_msg_id);
+        textViewMsg = findViewById(R.id.text_msg_id);
         inputSendMsg = findViewById(R.id.input_send_chat);
 
         senderName = getIntent().getExtras().get("user_name").toString();
-        chatName= getIntent().getExtras().get("room_name").toString();
+        chatName = getIntent().getExtras().get("room_name").toString();
 
         setTitle(chatName);
+
+        FirebaseMessaging.getInstance()
+                .subscribeToTopic("news")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+                            isSubscribed = true;
+                        } else {
+                            isSubscribed =false;
+                        }
+                    }
+                });
 
 
         root = FirebaseDatabase.getInstance().getReference().child(chatName);
@@ -53,15 +72,19 @@ public class ChatRoomActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Map<String , Object>map = new HashMap<String ,Object>();
-               tempKey = root.push().getKey();
+
+
+
+
+                Map<String, Object> map = new HashMap<String, Object>();
+                tempKey = root.push().getKey();
                 root.updateChildren(map);
 
                 DatabaseReference msgRoot = root.child(tempKey);
 
-                Map<String , Object>map2 = new HashMap<String ,Object>();
-                map2.put("name",senderName);
-                map2.put("msg",inputSendMsg.getText().toString());
+                Map<String, Object> map2 = new HashMap<String, Object>();
+                map2.put("name", senderName);
+                map2.put("msg", inputSendMsg.getText().toString());
                 msgRoot.updateChildren(map2);
                 inputSendMsg.setText("");
 
@@ -101,14 +124,14 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         Iterator iterator = dataSnapshot.getChildren().iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
 
             //iterator pega o valor
-            chatMessage = ((DataSnapshot)iterator.next()).getValue().toString();
-            chatUsername = ((DataSnapshot)iterator.next()).getValue().toString();
+            chatMessage = ((DataSnapshot) iterator.next()).getValue().toString();
+            chatUsername = ((DataSnapshot) iterator.next()).getValue().toString();
 
             //Mensagens whatever
-            textViewMsg.append(chatUsername+ ":" + chatMessage + "\n");
+            textViewMsg.append(chatUsername + ":" + chatMessage + "\n");
         }
 
     }

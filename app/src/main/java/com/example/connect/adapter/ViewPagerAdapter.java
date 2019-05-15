@@ -4,7 +4,6 @@ package com.example.connect.adapter;
 
 import com.example.connect.fragment.ChatsFragment;
 import com.example.connect.fragment.ContactosFragment;
-import com.example.connect.fragment.PerfilFragment;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -27,15 +26,13 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         if (position == 1){
             fragment = new ContactosFragment();
         }
-        if (position ==2){
-            fragment = new PerfilFragment();
-        }
+
         return fragment;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     public CharSequence getPageTitle(int position){
@@ -46,9 +43,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         if (position == 1){
             name = "Contactos";
         }
-        if (position == 2){
-            name = "Perfil";
-        }
+
         return name;
     }
 }
