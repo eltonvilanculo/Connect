@@ -2,12 +2,15 @@ package com.example.connect.fragment;
 
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +20,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.connect.R;
 import com.example.connect.activity.ChatRoomActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,7 +46,7 @@ import java.util.Set;
 public class ChatsFragment extends Fragment {
 
     EditText inputAddChat ;
-    Button btnAddChat ;
+FloatingActionButton btnAddChat ;
 
     ListView listViewchatList;
 
@@ -70,7 +75,6 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
         progressDialog.setMessage("Carregando conversas...");
         progressDialog.show();
         senderName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        inputAddChat = view.findViewById(R.id.input_add_chat);
         btnAddChat= view.findViewById(R.id.btn_add_chat);
         listViewchatList = view.findViewById(R.id.list_view_chat_list);
 
@@ -81,10 +85,10 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
             @Override
             public void onClick(View v) {
 
-                Map<String,Object> map = new HashMap<String, Object>();
-                //Nao colocamos o valor do objecto pk so precisamos do nome do chat
-                map.put(inputAddChat.getText().toString(),"");
-                root.updateChildren(map);
+                Toast.makeText(getContext(), "clik", Toast.LENGTH_SHORT).show();
+                showInputRoomName();
+
+
             }
         });
 
@@ -133,6 +137,46 @@ private DatabaseReference root= FirebaseDatabase.getInstance().getReference().ge
         });
 
         return view;
+    }
+
+    private void showInputRoomName() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Room name");
+
+// Set up the input
+        final EditText input = new EditText(getContext());
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT );
+
+        builder.setView(input);
+
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                String roomName = input.getText().toString();
+                if(roomName.trim().equalsIgnoreCase("")){
+                    Toast.makeText(getContext(), "O nome nao pode ser vazio", Toast.LENGTH_SHORT).show();
+                }else {
+                    Map<String,Object> map = new HashMap<String, Object>();
+                    //Nao colocamos o valor do objecto pk so precisamos do nome do chat
+                    map.put(roomName,"");
+                    root.updateChildren(map);
+
+                }
+                 }
+        });
+        builder.setNegativeButton("Fechar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+
     }
 
 }
