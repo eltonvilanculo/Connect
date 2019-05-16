@@ -105,4 +105,10 @@ public class ContentActivity extends AppCompatActivity {
 
         startActivity(new Intent(ContentActivity.this,MainActivity.class));
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
 }

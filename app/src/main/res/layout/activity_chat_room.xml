@@ -5,38 +5,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.ChatRoomActivity">
+    tools:context=".activity.ChatRoomActivity"
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    android:weightSum="100"
+
+    >
+
+    <include layout="@layout/toolbar"
 
 
-        <TextView
-            android:id="@+id/text_msg_id"
+        />
+
+
+
+        <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="msg" />
-    </ScrollView>
+            android:layout_weight="97"
+
+            >
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/text_msg_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="italic"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginBottom="24dp"
 
-        <EditText
 
-            android:id="@+id/input_send_chat"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content" />
+                    />
 
-        <Button
-            android:id="@+id/btn_send_chat"
-            android:layout_width="wrap_content"
+
+        </ScrollView>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add chat"
-            />
-    </LinearLayout>
+            android:layout_gravity="bottom|center"
+            android:layout_marginTop="24dp"
+            android:layout_weight="3"
+            >
+
+            <EditText
+
+                android:id="@+id/input_send_chat"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                />
+
+            <ImageButton
+                android:id="@+id/btn_send_chat"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/ic_send_black_24dp"
+                android:text="Add chat" />
+        </LinearLayout>
+
 
 
 </LinearLayout>

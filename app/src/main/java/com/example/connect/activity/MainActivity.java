@@ -3,6 +3,8 @@ package com.example.connect.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,10 +57,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            startActivity(new Intent(MainActivity.this, ContentActivity.class));
-            return;
+        if(checkConnection()==true){
+            if (currentUser != null) {
+                startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                return;
+            }
+        }else{
+            Toast.makeText(this, "Verifique a conexão  de internet", Toast.LENGTH_SHORT).show();
         }
+     
 
      /*   videoView= findViewById(R.id.video_view);
 
@@ -71,7 +78,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                showLoginDialog();
+                if(checkConnection()==true){
+                    showLoginDialog();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Verifique a conexão  de internet", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
@@ -79,7 +92,13 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_registar_id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSignUpDialog();
+                if(checkConnection()==true){
+                    showSignUpDialog();
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Verifique a conexão  de internet", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
@@ -101,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         customView.findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 signin(inputEmailLogin.getText().toString(), inputPasswordLogin.getText().toString());
 
@@ -210,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Toast.makeText(MainActivity.this, "Falha ao registar",
                                     Toast.LENGTH_SHORT).show();
                             // updateUI(null);
                         }
@@ -246,6 +266,20 @@ public class MainActivity extends AppCompatActivity {
         else return false;
 
 
+    }
+    boolean checkConnection(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+        if (connectivityManager!=null){
+            NetworkInfo [] info = connectivityManager.getAllNetworkInfo();
+            if(info!=null){
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState()==NetworkInfo.State.CONNECTED){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

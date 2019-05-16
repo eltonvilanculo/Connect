@@ -1,13 +1,16 @@
 package com.example.connect.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.connect.R;
+import com.example.connect.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -24,9 +27,11 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
+    private final String TAG = getClass().getSimpleName();
     TextView textViewMsg;
     EditText inputSendMsg;
 
@@ -45,13 +50,21 @@ public class ChatRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_room);
         textViewMsg = findViewById(R.id.text_msg_id);
         inputSendMsg = findViewById(R.id.input_send_chat);
+        Toolbar toolbar = findViewById(R.id.toolbar_id);
+
+
 
         senderName = getIntent().getExtras().get("user_name").toString();
         chatName = getIntent().getExtras().get("room_name").toString();
 
-        setTitle(chatName);
 
-        FirebaseMessaging.getInstance()
+
+        toolbar.setTitle(chatName);
+        setSupportActionBar(toolbar);
+
+         User userData = getUserData();
+
+     FirebaseMessaging.getInstance()
                 .subscribeToTopic("news")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -60,7 +73,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             isSubscribed = true;
                         } else {
-                            isSubscribed =false;
+                            isSubscribed = false;
                         }
                     }
                 });
@@ -71,9 +84,6 @@ public class ChatRoomActivity extends AppCompatActivity {
         findViewById(R.id.btn_send_chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
 
 
                 Map<String, Object> map = new HashMap<String, Object>();
@@ -133,6 +143,22 @@ public class ChatRoomActivity extends AppCompatActivity {
             //Mensagens whatever
             textViewMsg.append(chatUsername + ":" + chatMessage + "\n");
         }
+
+    }
+
+    public User getUserData() {
+        try {
+            return (User)getIntent().getParcelableExtra("user");
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public String getUsernameClicked(){
+
+        return (String) getIntent().getExtras().get("user_name_clicked");
+
+
 
     }
 }
