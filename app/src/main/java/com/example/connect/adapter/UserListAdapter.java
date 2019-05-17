@@ -15,6 +15,7 @@ import com.example.connect.R;
 import com.example.connect.activity.ChatRoomActivity;
 import com.example.connect.activity.ContentActivity;
 import com.example.connect.model.User;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
     private Context mContext;
     private List<User> userList;
     String TAG = getClass().getSimpleName();
+
 
     private  OnContactClicked onContactClicked;
     public UserListAdapter(Context mContext, OnContactClicked onContactClicked) {
@@ -51,6 +53,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserVi
 
     public void add(User user){
         userList.add(user);
+
+
     }
 
 

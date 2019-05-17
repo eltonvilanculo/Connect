@@ -14,11 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.connect.R;
 import com.example.connect.activity.ChatRoomActivity;
-import com.example.connect.activity.MainActivity;
 import com.example.connect.model.User;
 import com.example.connect.adapter.UserListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,8 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -41,7 +37,8 @@ public class ContactosFragment extends Fragment {
     RecyclerView recyclerView;
     UserListAdapter adapter;
 
-    List<User> userList;
+
+    String myName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
 
     DatabaseReference ref;
@@ -60,7 +57,8 @@ public class ContactosFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_contactos, container, false);
 
 
-        userList = new ArrayList<>();
+
+
 
         adapter = new UserListAdapter(getActivity(), this::handleAction);
         recyclerView = view.findViewById(R.id.recycler);
@@ -70,7 +68,6 @@ public class ContactosFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
-        String userId = FirebaseAuth.getInstance().getUid();
         ref = FirebaseDatabase.getInstance().getReference();
         DatabaseReference usersRef = ref.child("users");
 
@@ -78,8 +75,14 @@ public class ContactosFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 try {
+                    
                     user = dataSnapshot.getValue(User.class);
-                    addTolist(user);
+                    if(user.getUsername().equalsIgnoreCase(myName)){
+
+                    }else{
+                        addTolist(user);
+                    }
+
                 } catch (NullPointerException | NoSuchElementException ex) {
 
                 }
@@ -111,12 +114,13 @@ public class ContactosFragment extends Fragment {
     }
 
     private void handleAction(User user) {
-        Toast.makeText(getActivity(), user.getUsername(), Toast.LENGTH_SHORT).show();
-       /* Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
-        intent.putExtra("user_name_clicked",user.getUsername());
-        startActivity(intent);*/
+       // Toast.makeText(getActivity(), user.getUsername(), Toast.LENGTH_SHORT).show();
+       Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
+        intent.putExtra("key",user);
+        startActivity(intent);
 
         //Toast.makeText(getActivity(), "Clicked Now", Toast.LENGTH_SHORT).show();
+
         Log.d(TAG, "handleAction: " + String.valueOf(user));
     }
 
